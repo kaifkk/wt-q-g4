@@ -98,7 +98,7 @@ function submitRequest() {
     formData.append('category', category);
     formData.append('message',  message);
 
-    fetch('app/controllers/requestController.php', {
+    fetch('controllers/requestController.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: formData.toString()
