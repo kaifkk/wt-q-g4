@@ -534,3 +534,115 @@ option   { color: white; background: #30302E; }
     vertical-align: middle;
 }
 h1 { margin-bottom: 20px; }
+
+
+.mod-wrapper { max-width: 1150px; margin: 30px auto; padding: 0 20px; }
+.section-card {
+    background-color: #262624;
+    border: 1px solid #41413E;
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 28px;
+}
+.section-card h3 { margin-top: 0; color: white; }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #41413E; }
+th { color: #aaa; font-weight: normal; }
+td { color: #faf9f5b1; }
+.btn-upload {
+    background: #1a5c1a; color: #faf9f5b1;
+    border: none; padding: 10px 22px;
+    border-radius: 5px; cursor: pointer; font-size: 0.95rem;
+    text-decoration: none; display: inline-block;
+    margin-bottom: 18px; transition: background 0.2s;
+}
+.btn-upload:hover { background: #246e24; }
+.btn-danger {
+    background: #7a1f1f; color: #faf9f5b1;
+    border: none; padding: 6px 12px;
+    border-radius: 4px; cursor: pointer; font-size: 0.82rem;
+    transition: background 0.2s;
+}
+.btn-danger:hover { background: #a32828; }
+.btn-danger:disabled { background: #444; cursor: not-allowed; opacity: 0.6; }
+.flash-success {
+    background: #1a3d1a; border: 1px solid #2e6b2e;
+    padding: 10px 14px; border-radius: 4px; margin-bottom: 16px; color: #6fcf6f;
+}
+.flash-error {
+    background: #3d1a1a; border: 1px solid #6b2e2e;
+    padding: 10px 14px; border-radius: 4px; margin-bottom: 16px; color: #cf6f6f;
+}
+.flash-error ul { margin: 0; padding-left: 18px; }
+.back-link { color: #4da6ff; text-decoration: none; font-size: 0.9rem; }
+.back-link:hover { text-decoration: underline; }
+.empty-row td { text-align: center; color: #666; padding: 20px; }
+.truncate { max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.badge {
+    display: inline-block;
+    background: #0d3358; color: #4da6ff;
+    border-radius: 12px; padding: 2px 10px; font-size: 0.78rem;
+}
+.filter-bar {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; align-items: center;
+}
+.filter-bar input[type="text"],
+.filter-bar select {
+    background: #30302E; color: white;
+    border: 1px solid #41413E; border-radius: 4px;
+    padding: 8px 12px; outline: none; font-size: 0.88rem;
+}
+.filter-bar input[type="text"] { flex: 1; min-width: 180px; }
+.btn-filter {
+    background: #0d447b; color: #faf9f5b1;
+    border: none; padding: 8px 18px;
+    border-radius: 4px; cursor: pointer; font-size: 0.88rem;
+}
+.btn-filter:hover { background: #1455a0; }
+.btn-clear {
+    background: #333; color: #aaa;
+    border: none; padding: 8px 14px;
+    border-radius: 4px; cursor: pointer; font-size: 0.88rem; text-decoration: none;
+}
+.btn-clear:hover { background: #444; }
+
+#toast {
+    position: fixed; bottom: 24px; right: 24px;
+    padding: 12px 20px; border-radius: 6px;
+    font-size: 0.9rem; z-index: 9999;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+}
+#toast.show { opacity: 1; transform: translateY(0); }
+#toast.toast-success { background: #1a3d1a; border: 1px solid #2e6b2e; color: #6fcf6f; }
+#toast.toast-error   { background: #3d1a1a; border: 1px solid #6b2e2e; color: #cf6f6f; }
+
+#confirmOverlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.65); z-index: 8888;
+    align-items: center; justify-content: center;
+}
+#confirmOverlay.open { display: flex; }
+#confirmBox {
+    background: #262624; border: 1px solid #41413E;
+    border-radius: 8px; padding: 28px 32px;
+    max-width: 420px; width: 90%;
+    text-align: center;
+}
+#confirmBox p { margin: 0 0 20px; font-size: 0.95rem; color: #faf9f5b1; }
+#confirmBox strong { color: #e05c5c; }
+.confirm-btns { display: flex; gap: 12px; justify-content: center; }
+.btn-confirm-yes {
+    background: #7a1f1f; color: white;
+    border: none; padding: 9px 24px;
+    border-radius: 4px; cursor: pointer; font-size: 0.9rem;
+}
+.btn-confirm-yes:hover { background: #a32828; }
+.btn-confirm-no {
+    background: #333; color: #aaa;
+    border: none; padding: 9px 24px;
+    border-radius: 4px; cursor: pointer; font-size: 0.9rem;
+}
+.btn-confirm-no:hover { background: #444; }
+tr.deleting { opacity: 0.4; transition: opacity 0.3s; }
