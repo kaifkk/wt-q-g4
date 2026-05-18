@@ -1,11 +1,16 @@
-<?php include 'app/config/config.php'; ?>
+<?php 
+include 'app/config/config.php';
+require_once 'app/models/contentModel.php';
+session_start();
+$contents = getHighlightedContents();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="app/public/assets/css/style.css?v=<?$version?>">
+    <link rel="stylesheet" href="app/public/assets/css/style.css?v=<?=$version?>">
 </head>
 <body>
     <div>
@@ -17,6 +22,10 @@
             <div>
                 <input type="button" name="homeBtn" value="Home" />
                 <input type="button" name="browseBtn" value="Browse" />
+                <?php if(isset($_SESSION['user_id'])) { ?>
+                        <input type="button" name="profileBtn" value="Profile" />
+                <?php } ?>
+                
             </div>
         </div>
 
@@ -29,6 +38,24 @@
             </div>
         </div>
 
+        <p>Most downloaded this week</p>
+
+       
+
+        <div class="heroSectionContent">
+            <?php while($content = mysqli_fetch_assoc($contents)) { ?>
+                <div class="contentCard">
+                    <h3><?php echo htmlspecialchars($content['title']); ?></h3>
+                    <p><?php echo htmlspecialchars($content['category_name']); ?></p>
+                    <p><?php echo htmlspecialchars($content['description']); ?></p>
+                    <div>
+                        <span class="categoryTag">Category</span>
+                        <input type="button" name="downloadBtn" value="Download" />
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+        
     </div>
 </body>
 </html>
