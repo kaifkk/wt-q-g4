@@ -1,6 +1,6 @@
 <?php 
 include 'app/config/config.php';
-require_once 'app/models/contentModel.php';
+require_once 'app/models/contentModels.php';
 session_start();
 $contents = getHighlightedContents();
 ?>
