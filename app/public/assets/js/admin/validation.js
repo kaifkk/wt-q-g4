@@ -42,3 +42,99 @@ function validateModForm(e) {
     if (!valid) e.preventDefault();
     return valid;
 }
+
+const ALLOWED_EXTS  = ['zip','rar','7z','tar','gz','mp4','mkv','avi','mov','mp3','flac','wav',
+                        'exe','msi','iso','apk','pdf','txt'];
+const MAX_BYTES     = 200 * 1024 * 1024; // 200 MB
+
+function showFileInfo(input) {
+    const info = document.getElementById('fileInfo');
+    if (input.files.length === 0) { info.textContent = ''; return; }
+    const f = input.files[0];
+    const mb = (f.size / 1024 / 1024).toFixed(2);
+    info.textContent = `Selected: ${f.name} (${mb} MB)`;
+}
+
+function validateUploadForm(e) {
+    let valid = true;
+
+    document.getElementById('err-title').textContent    = '';
+    document.getElementById('err-category').textContent = '';
+    document.getElementById('err-file').textContent     = '';
+
+    const title    = document.getElementById('title').value.trim();
+    const category = document.getElementById('category_id').value;
+    const fileInput= document.getElementById('content_file');
+
+    if (title === '') {
+        document.getElementById('err-title').textContent = 'Title is required.';
+        valid = false;
+    }
+    if (category === '') {
+        document.getElementById('err-category').textContent = 'Please select a category.';
+        valid = false;
+    }
+    if (fileInput.files.length === 0) {
+        document.getElementById('err-file').textContent = 'Please select a file to upload.';
+        valid = false;
+    } else {
+        const f   = fileInput.files[0];
+        const ext = f.name.split('.').pop().toLowerCase();
+        if (!ALLOWED_EXTS.includes(ext)) {
+            document.getElementById('err-file').textContent = 'File type .' + ext + ' is not allowed.';
+            valid = false;
+        } else if (f.size > MAX_BYTES) {
+            document.getElementById('err-file').textContent = 'File exceeds the 200 MB limit.';
+            valid = false;
+        }
+    }
+
+    if (!valid) e.preventDefault();
+    return valid;
+}
+
+function confirmDeleteContent(id, title) {
+    if (confirm('Delete content "' + title + '"?\nThe file will also be removed from the server.')) {
+        document.getElementById('deleteContentId').value = id;
+        document.getElementById('deleteContentForm').submit();
+    }
+}
+
+const ALLOWED_EXTS = ['zip','rar','7z','tar','gz','mp4','mkv','avi','mov','mp3','flac','wav',
+                        'exe','msi','iso','apk','pdf','txt'];
+const MAX_BYTES    = 200 * 1024 * 1024;
+
+function validateEditForm(e) {
+    let valid = true;
+
+    document.getElementById('err-title').textContent    = '';
+    document.getElementById('err-category').textContent = '';
+    document.getElementById('err-file').textContent     = '';
+
+    const title    = document.getElementById('title').value.trim();
+    const category = document.getElementById('category_id').value;
+    const fileInput= document.getElementById('content_file');
+
+    if (title === '') {
+        document.getElementById('err-title').textContent = 'Title is required.';
+        valid = false;
+    }
+    if (category === '') {
+        document.getElementById('err-category').textContent = 'Please select a category.';
+        valid = false;
+    }
+    if (fileInput.files.length > 0) {
+        const f   = fileInput.files[0];
+        const ext = f.name.split('.').pop().toLowerCase();
+        if (!ALLOWED_EXTS.includes(ext)) {
+            document.getElementById('err-file').textContent = 'File type .' + ext + ' is not allowed.';
+            valid = false;
+        } else if (f.size > MAX_BYTES) {
+            document.getElementById('err-file').textContent = 'File exceeds the 200 MB limit.';
+            valid = false;
+        }
+    }
+
+    if (!valid) e.preventDefault();
+    return valid;
+}
