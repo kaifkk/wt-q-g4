@@ -28,7 +28,8 @@ $categories = getAllCategories();
                 <input type="button" name="homeBtn" value="Home" onclick="window.location.href='index.php'" />
                 <?php if(isset($_SESSION['user_id'])): ?>
                     <input type="button" name="dashboardBtn" value="Dashboard" onclick="window.location.href='app/views/dashboard.php'" />
-                    <input type="button" name="profileBtn" value="Profile" onclick="window.location.href='views/profile.php'" /> 
+                    <input type="button" name="profileBtn" value="Profile" onclick="window.location.href='views/profile.php'" />
+                    <input type="button" name="logoutBtn" value="Logout" onclick="window.location.href='controllers/logoutController.php'" /> 
                 <?php endif; ?>
             </div>
         </div>
