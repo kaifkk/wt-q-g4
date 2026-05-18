@@ -48,4 +48,61 @@ function searchContents($query, $categoryId = '') {
     
     return $contents;
 }
+
+function getHighlightedContents() {
+
+    $mysqli = getDB();
+
+    $sql = "SELECT c.*, cat.name AS category_name
+            FROM contents c
+            JOIN categories cat
+            ON c.category_id = cat.id
+            ORDER BY c.download_count DESC
+            LIMIT 5";
+
+    $result = $mysqli->query($sql);
+
+    $contents = [];
+
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $contents[] = $row;
+        }
+    }
+
+    $mysqli->close();
+
+    return $contents;
+}
+function getContentsByCategory($id) {
+
+    $mysqli = getDB();
+
+    $sql = "SELECT c.*, cat.name AS category_name
+            FROM contents c
+            JOIN categories cat ON c.category_id = cat.id
+            WHERE c.category_id = ?
+            OR c.category_id IN (
+                SELECT id FROM categories WHERE parent_id = ?
+            )";
+
+    $stmt = $mysqli->prepare($sql);
+
+    $stmt->bind_param('ii', $id, $id);
+
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    $contents = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $contents[] = $row;
+    }
+
+    $stmt->close();
+    $mysqli->close();
+
+    return $contents;
+}
 ?>

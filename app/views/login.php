@@ -20,8 +20,7 @@ unset($_SESSION['error']);
                 <h2>MediaFTP</h2>
             </div>
             <div class="navbarLoginRegisterButtonAuthenticationForm">
-                <input type="button" value="Login">
-                <input type="button" value="Register">
+                <input type="button" value="Register" onclick="window.location.href='register.php'">
             </div>
         </div>
 

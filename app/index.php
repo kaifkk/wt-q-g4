@@ -1,9 +1,12 @@
 <?php 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 
-require_once 'app/config/config.php'; 
+require __DIR__ . '/config/config.php'; 
 
-require_once 'app/models/contentModel.php'; 
+require __DIR__ . '/models/contentModel.php'; 
 $categories = getAllCategories();
 ?>
 <!DOCTYPE html>
@@ -12,22 +15,20 @@ $categories = getAllCategories();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MediaFTP - Home</title>
-    <link rel="stylesheet" href="app/public/assets/css/style.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="public/assets/css/style.css?v=<?= $version ?>">
 </head>
 <body>
     <div>
         <div class="navbar">
             <div class="mediaFTPnavbar">
-                <img src="app/public/assets/icons/media.png" alt="mediaLogo">
+                <img src="public/assets/icons/media.png" alt="mediaLogo">
                 <h2>MediaFTP</h2>
             </div>
             <div class="navbarLoginRegisterButtonAuthenticationForm">
                 <input type="button" name="homeBtn" value="Home" onclick="window.location.href='index.php'" />
                 <?php if(isset($_SESSION['user_id'])): ?>
                     <input type="button" name="dashboardBtn" value="Dashboard" onclick="window.location.href='app/views/dashboard.php'" />
-                <?php else: ?>
-                    <input type="button" name="loginBtn" value="Login" onclick="window.location.href='app/views/login.php'" />
-                    <input type="button" name="registerBtn" value="Register" onclick="window.location.href='app/views/register.php'" />
+                    <input type="button" name="profileBtn" value="Profile" onclick="window.location.href='views/profile.php'" /> 
                 <?php endif; ?>
             </div>
         </div>
@@ -48,7 +49,9 @@ $categories = getAllCategories();
             </div>
         </div>
 
-        <div id="contentGrid" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 30px 20px;">
+        <h2 id="contentSectionTitle" style="text-align: center; padding: 20px 0 0; margin: 0;">Most Downloaded</h2>
+
+        <div id="contentGrid" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 20px 20px 30px;">
             <p>Loading contents...</p>
         </div>
 
@@ -92,7 +95,7 @@ $categories = getAllCategories();
 
     </div>
 
-    <script src="app/public/assets/js/member.js"></script>
+    <script src="public/assets/js/member.js"></script>
     <script>
         window.onload = performSearch;
     </script>

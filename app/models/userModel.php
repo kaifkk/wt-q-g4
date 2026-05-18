@@ -1,61 +1,101 @@
 <?php
-require '../core/database.php';
+require_once __DIR__ . '/../core/database.php';
 
 function findUserByEmail($email) {
-    global $conn;
-
-    $sql = "SELECT * FROM users WHERE email=?";
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, 's', $email);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-
-    return mysqli_fetch_assoc($result);
+    $mysqli = getDB();
+    $stmt   = $mysqli->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+    $user = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    $mysqli->close();
+    return $user;
 }
 
-function createUser(
-    $name,
-    $email,
-    $password,
-    $role
-) {
-    global $conn;
-    $hash = password_hash($password, PASSWORD_DEFAULT);
+function findUserById($id) {
+    $mysqli = getDB();
+    $stmt   = $mysqli->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $user = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    $mysqli->close();
+    return $user;
+}
 
-    $sql = "INSERT INTO users
-            (name,email,password_hash,role)
-            VALUES(?,?,?,?)";
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param(
-        $stmt,
-        'ssss',
-        $name,
-        $email,
-        $hash,
-        $role
+function createUser($name, $email, $password, $role) {
+    $mysqli = getDB();
+    $hash   = password_hash($password, PASSWORD_DEFAULT);
+    $stmt   = $mysqli->prepare(
+        "INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)"
     );
-
-    return mysqli_stmt_execute($stmt);
-
+    $stmt->bind_param('ssss', $name, $email, $hash, $role);
+    $success = $stmt->execute();
+    $stmt->close();
+    $mysqli->close();
+    return $success;
 }
 
 function saveRememberToken($id, $token) {
+    $mysqli = getDB();
+    $stmt   = $mysqli->prepare("UPDATE users SET remember_token = ? WHERE id = ?");
+    $stmt->bind_param('si', $token, $id);
+    $success = $stmt->execute();
+    $stmt->close();
+    $mysqli->close();
+    return $success;
+}
 
-    global $conn;
+function clearRememberToken($id) {
+    $mysqli = getDB();
+    $stmt   = $mysqli->prepare("UPDATE users SET remember_token = NULL WHERE id = ?");
+    $stmt->bind_param('i', $id);
+    $success = $stmt->execute();
+    $stmt->close();
+    $mysqli->close();
+    return $success;
+}
 
-    $sql = "UPDATE users
-            SET remember_token=?
-            WHERE id=?";
 
-    $stmt = mysqli_prepare($conn, $sql);
+function updateProfile($id, $name, $email, $picturePath = null) {
+    $mysqli = getDB();
 
-    mysqli_stmt_bind_param(
-        $stmt,
-        'si',
-        $token,
-        $id
-    );
+    if ($picturePath !== null) {
+        $stmt = $mysqli->prepare(
+            "UPDATE users SET name = ?, email = ?, profile_picture = ? WHERE id = ?"
+        );
+        $stmt->bind_param('sssi', $name, $email, $picturePath, $id);
+    } else {
+        $stmt = $mysqli->prepare(
+            "UPDATE users SET name = ?, email = ? WHERE id = ?"
+        );
+        $stmt->bind_param('ssi', $name, $email, $id);
+    }
 
-    return mysqli_stmt_execute($stmt);
+    $success = $stmt->execute();
+    $stmt->close();
+    $mysqli->close();
+    return $success;
+}
+
+function updatePassword($id, $currentPassword, $newPassword) {
+    $user = findUserById($id);
+
+    if (!$user) {
+        return 'User not found.';
+    }
+    if (!password_verify($currentPassword, $user['password_hash'])) {
+        return 'Current password is incorrect.';
+    }
+
+    $mysqli  = getDB();
+    $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
+    $stmt    = $mysqli->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
+    $stmt->bind_param('si', $newHash, $id);
+    $success = $stmt->execute();
+    $stmt->close();
+    $mysqli->close();
+
+    return $success ? true : 'Failed to update password.';
 }
 ?>
