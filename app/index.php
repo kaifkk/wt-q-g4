@@ -27,7 +27,13 @@ $categories = getAllCategories();
             <div class="navbarLoginRegisterButtonAuthenticationForm">
                 <input type="button" name="homeBtn" value="Home" onclick="window.location.href='index.php'" />
                 <?php if(isset($_SESSION['user_id'])): ?>
-                    <input type="button" name="dashboardBtn" value="Dashboard" onclick="window.location.href='views/dashboard.php'" />
+                    <?php $role = $_SESSION['role'] ?? 'user' ?>
+                    <?php if($role === 'admin'): ?>
+                    <input type="button" name="dashboardBtn" value="Dashboard" onclick="window.location.href='views/admin/dashboard.php'" />
+                    <?php endif; ?>
+                    <?php if($role === 'moderator'): ?>
+                    <input type="button" name="dashboardBtn" value="Dashboard" onclick="window.location.href='views/moderator/dashboard.php'" />
+                    <?php endif; ?> 
                     <input type="button" name="profileBtn" value="Profile" onclick="window.location.href='views/profile.php'" />
                     <input type="button" name="logoutBtn" value="Logout" onclick="window.location.href='controllers/logoutController.php'" /> 
                 <?php endif; ?>

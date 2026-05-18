@@ -1,189 +1,110 @@
-<?php
+<?php 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
+require __DIR__ . '/config/config.php'; 
 
-require_once '../models/userModel.php';
-require '../config/config.php';
-
-$user = findUserById((int) $_SESSION['user_id']);
-if (!$user) {
-    session_destroy();
-    header('Location: login.php');
-    exit();
-}
-
-$profileErrors  = $_SESSION['profile_errors']  ?? [];
-$profileSuccess = $_SESSION['profile_success'] ?? '';
-$passwordErrors = $_SESSION['password_errors'] ?? [];
-$passwordSuccess= $_SESSION['password_success']?? '';
-unset(
-    $_SESSION['profile_errors'],
-    $_SESSION['profile_success'],
-    $_SESSION['password_errors'],
-    $_SESSION['password_success']
-);
-
-$avatarSrc = !empty($user['profile_picture'])
-    ? '../public/assets/uploads/' . htmlspecialchars($user['profile_picture'])
-    : '../public/assets/icons/media.png';
+require __DIR__ . '/models/contentModel.php'; 
+$categories = getAllCategories();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile – MediaFTP</title>
-    <link rel="stylesheet" href="../public/assets/css/style.css?v=<?=$version?>">
+    <title>MediaFTP - Home</title>
+    <link rel="stylesheet" href="public/assets/css/style.css?v=<?= $version ?>">
 </head>
 <body>
-    <div class="navbar">
-        <div class="mediaFTPnavbar">
-            <img src="../public/assets/icons/media.png" alt="mediaLogo">
-            <h2>MediaFTP</h2>
-        </div>
-        <div class="navbarLoginRegisterButtonAuthenticationForm">
-            <input type="button" value="Home" onclick="window.location.href='../index.php'" />
-            <input type="button" value="Dashboard" onclick="window.location.href='dashboard.php'" />
-        </div>
-    </div>
-
-    <div class="profile-wrapper">
-        <div class="profile-header">
-            <img src="<?= $avatarSrc ?>" alt="Avatar" class="profile-avatar" id="headerAvatar">
-            <div class="profile-header-info">
-                <h2><?= htmlspecialchars($user['name']) ?></h2>
-                <span><?= htmlspecialchars($user['role']) ?></span>
+    <div>
+        <div class="navbar">
+            <div class="mediaFTPnavbar">
+                <img src="public/assets/icons/media.png" alt="mediaLogo">
+                <h2>MediaFTP</h2>
+            </div>
+            <div class="navbarLoginRegisterButtonAuthenticationForm">
+                <input type="button" name="homeBtn" value="Home" onclick="window.location.href='index.php'" />
+                <?php if(isset($_SESSION['user_id'])): ?>
+                    <?php $role = $_SESSION['role'] ?? 'user' ?>
+                    <?php if($role === 'admin'): ?>
+                    <input type="button" name="dashboardBtn" value="Dashboard" onclick="window.location.href='views/admin/dashboard.php'" />
+                    <?php endif; ?>
+                    <?php if($role === 'moderator'): ?>
+                    <input type="button" name="dashboardBtn" value="Dashboard" onclick="window.location.href='views/moderator/dashboard.php'" />
+                    <?php endif; ?> 
+                    <input type="button" name="profileBtn" value="Profile" onclick="window.location.href='views/profile.php'" />
+                    <input type="button" name="logoutBtn" value="Logout" onclick="window.location.href='controllers/logoutController.php'" /> 
+                <?php endif; ?>
             </div>
         </div>
 
-        <div class="section-card">
-            <h3>Update Profile</h3>
+        <div class="heroSectionCard" style="text-align: center; padding: 50px 20px; height: auto;">
+            <h2>Free Media Downloads</h2>
+            <p>Movies, Software, TV Series, Games - no account needed</p>
+            
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+                <input type="text" id="searchBar" placeholder="Search titles, descriptions.." onkeyup="performSearch()" style="width: 300px; border-radius: 5px; background-color: #30302E; color: white; padding: 10px; border: 1px solid #41413E; outline: none;" />
+                
+                <select id="categoryFilter" onchange="performSearch()" style="border-radius: 5px; padding: 10px; background-color: #30302E; color: white; border: 1px solid #41413E; outline: none;">
+                    <option value="">All Categories</option>
+                    <?php foreach($categories as $cat): ?>
+                        <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
 
-            <?php if (!empty($profileSuccess)): ?>
-                <div class="flash-success"><?= htmlspecialchars($profileSuccess) ?></div>
-            <?php endif; ?>
+        <h2 id="contentSectionTitle" style="text-align: center; padding: 20px 0 0; margin: 0;">Most Downloaded</h2>
 
-            <?php if (!empty($profileErrors)): ?>
-                <div class="flash-error">
-                    <ul>
-                        <?php foreach ($profileErrors as $e): ?>
-                            <li><?= htmlspecialchars($e) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
+        <div id="contentGrid" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 20px 20px 30px;">
+            <p>Loading contents...</p>
+        </div>
 
-            <form action="../controllers/profileController.php" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="action" value="update_profile">
-
-                <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" name="name"
-                           value="<?= htmlspecialchars($user['name']) ?>" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email"
-                           value="<?= htmlspecialchars($user['email']) ?>" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Profile Picture</label>
-                    <div class="avatar-preview-wrap">
-                        <img src="<?= $avatarSrc ?>" alt="Preview" id="avatarPreview">
-                        <input type="file" name="profile_picture" id="pictureInput"
-                               accept="image/jpeg,image/png,image/gif,image/webp"
-                               onchange="previewAvatar(event)">
+        <div style="padding: 40px 20px; text-align: center;">
+            <h2>Can't find what you're looking for?</h2>
+            
+            <div class="registrationFormCard" style="max-width: 500px; margin: 0 auto; text-align: left;">
+                <h3 style="margin-top: 0; color: white;">Request Missing Content</h3>
+                <p id="sys-msg"></p>
+                <form id="requestForm" onsubmit="event.preventDefault(); submitRequest();">
+                    
+                    <div class="registrationFormInputs">
+                        <p style="margin-bottom: 5px;">Content Title *</p>
+                        <input type="text" id="req_title" style="background-color: #30302E; color: white; padding: 10px; border: none; border-radius: 4px; outline: none; width: 100%; box-sizing: border-box;" required>
+                        <span id="err-title" style="color: #ff6b6b; font-size: 12px;"></span>
                     </div>
-                    <small style="color:#888;">JPEG, PNG, GIF or WebP — max 2 MB. Leave empty to keep current.</small>
-                </div>
 
-                <input type="submit" class="btn-primary" value="Save Changes">
-            </form>
-        </div>
+                    <div class="registrationFormInputs" style="margin-top: 15px;">
+                        <p style="margin-bottom: 5px;">Category *</p>
+                        <select id="req_category" style="background-color: #30302E; color: white; padding: 10px; border: none; border-radius: 4px; outline: none; width: 100%; box-sizing: border-box;" required>
+                            <option value="">Select Category</option>
+                            <?php foreach($categories as $cat): ?>
+                                <option value="<?= htmlspecialchars($cat['name']) ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                            <?php endforeach; ?>
+                            <option value="Other">Other</option>
+                        </select>
+                        <span id="err-category" style="color: #ff6b6b; font-size: 12px;"></span>
+                    </div>
 
-        <div class="section-card">
-            <h3>Change Password</h3>
+                    <div class="registrationFormInputs" style="margin-top: 15px;">
+                        <p style="margin-bottom: 5px;">Additional Message</p>
+                        <textarea id="req_message" rows="3" style="background-color: #30302E; color: white; padding: 10px; border: none; border-radius: 4px; outline: none; width: 100%; box-sizing: border-box;"></textarea>
+                    </div>
 
-            <?php if (!empty($passwordSuccess)): ?>
-                <div class="flash-success"><?= htmlspecialchars($passwordSuccess) ?></div>
-            <?php endif; ?>
-
-            <?php if (!empty($passwordErrors)): ?>
-                <div class="flash-error">
-                    <ul>
-                        <?php foreach ($passwordErrors as $e): ?>
-                            <li><?= htmlspecialchars($e) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
-
-            <form action="../controllers/profileController.php" method="POST">
-                <input type="hidden" name="action" value="change_password">
-
-                <div class="form-group">
-                    <label for="current_password">Current Password</label>
-                    <input type="password" id="current_password" name="current_password"
-                           placeholder="Enter current password" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="new_password">New Password</label>
-                    <input type="password" id="new_password" name="new_password"
-                           placeholder="Minimum 8 characters" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="confirm_password">Confirm New Password</label>
-                    <input type="password" id="confirm_password" name="confirm_password"
-                           placeholder="Repeat new password" required>
-                </div>
-
-                <input type="submit" class="btn-primary" value="Change Password"
-                       onclick="return validatePasswordForm()">
-            </form>
-        </div>
-
-        <div class="section-card" style="text-align:center;">
-            <h3>Session</h3>
-            <p style="margin-bottom:16px; color:#aaa; font-size:0.9rem;">
-                Logged in as <strong style="color:white;"><?= htmlspecialchars($user['email']) ?></strong>
-            </p>
-            <a href="../controllers/logoutController.php" class="btn-logout"
-               onclick="return confirm('Log out of MediaFTP?')">Log Out</a>
+                    <div style="margin-top: 25px;">
+                        <input type="button" value="Submit Request" onclick="submitRequest()" style="width: 100%;">
+                    </div>
+                </form>
+            </div>
         </div>
 
     </div>
 
+    <script src="public/assets/js/member.js"></script>
     <script>
-        function previewAvatar(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const url = URL.createObjectURL(file);
-            document.getElementById('avatarPreview').src = url;
-            document.getElementById('headerAvatar').src  = url;
-        }
-
-        function validatePasswordForm() {
-            const np = document.getElementById('new_password').value;
-            const cp = document.getElementById('confirm_password').value;
-            if (np.length < 8) {
-                alert('New password must be at least 8 characters.');
-                return false;
-            }
-            if (np !== cp) {
-                alert('New passwords do not match.');
-                return false;
-            }
-            return true;
-        }
+        window.onload = performSearch;
     </script>
-
 </body>
 </html>
