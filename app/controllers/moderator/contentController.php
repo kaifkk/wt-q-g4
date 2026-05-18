@@ -13,7 +13,8 @@ $action = $_POST['action'] ?? '';
 $ALLOWED_EXTS = ['zip','rar','7z','tar','gz','mp4','mkv','avi','mov',
                  'mp3','flac','wav','exe','msi','iso','apk','pdf','txt'];
 $MAX_BYTES    = 200 * 1024 * 1024;
-$UPLOAD_DIR   = dir(__DIR__, 2) . '/public/uploads/contents/';
+// $UPLOAD_DIR = dirname(__DIR__, 2) . '/public/uploads/contents/';
+$UPLOAD_DIR = dirname(__DIR__, 2) . '/public/assets/uploads/contents/';
 
 function modHandleFileUpload($fileKey, $allowedExts, $maxBytes, $uploadDir) {
     if (empty($_FILES[$fileKey]['name'])) {

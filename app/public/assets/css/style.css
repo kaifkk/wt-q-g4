@@ -646,3 +646,51 @@ td { color: #faf9f5b1; }
 }
 .btn-confirm-no:hover { background: #444; }
 tr.deleting { opacity: 0.4; transition: opacity 0.3s; }
+
+.mod-wrapper { max-width: 700px; margin: 30px auto; padding: 0 20px; }
+.section-card {
+    background-color: #262624;
+    border: 1px solid #41413E;
+    border-radius: 8px;
+    padding: 28px 32px;
+}
+.section-card h3 { margin-top: 0; color: white; }
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; margin-bottom: 6px; color: #aaa; font-size: 0.9rem; }
+.form-group input[type="text"],
+.form-group textarea,
+.form-group select {
+    width: 100%; box-sizing: border-box;
+    background: #30302E; color: white;
+    border: 1px solid #41413E; border-radius: 4px;
+    padding: 10px; outline: none; font-size: 0.9rem;
+}
+.form-group input[type="file"] {
+    background: #30302E; color: #aaa;
+    border: 1px solid #41413E; border-radius: 4px;
+    padding: 8px; width: 100%; box-sizing: border-box;
+}
+.form-group textarea { resize: vertical; min-height: 90px; }
+.err-msg { color: #cf6f6f; font-size: 0.8rem; margin-top: 4px; display: block; }
+.btn-primary {
+    background: #0d447b; color: #faf9f5b1;
+    border: none; padding: 11px 28px;
+    border-radius: 5px; cursor: pointer;
+    font-size: 0.95rem; transition: background 0.2s;
+}
+.btn-primary:hover { background: #1455a0; }
+.flash-success {
+    background: #1a3d1a; border: 1px solid #2e6b2e;
+    padding: 10px 14px; border-radius: 4px; margin-bottom: 16px; color: #6fcf6f;
+}
+.flash-error {
+    background: #3d1a1a; border: 1px solid #6b2e2e;
+    padding: 10px 14px; border-radius: 4px; margin-bottom: 16px; color: #cf6f6f;
+}
+.flash-error ul { margin: 0; padding-left: 18px; }
+.back-link { color: #4da6ff; text-decoration: none; font-size: 0.9rem; }
+.back-link:hover { text-decoration: underline; }
+optgroup { color: #aaa; }
+option  { color: white; background: #30302E; }
+#fileInfo { font-size: 0.8rem; color: #888; margin-top: 6px; }
+.char-count { font-size: 0.78rem; color: #666; float: right; }
