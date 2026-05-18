@@ -1,0 +1,101 @@
+*{
+    color: #faf9f5b1;
+}
+
+body {
+    background-color: #30302E;
+}
+
+.navbar {
+    background-color: #262624;
+    border: 1px solid #262624;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mediaFTPnavbar > img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.mediaFTPnavbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 10px;
+}
+
+.navbarLoginRegisterButtonAuthenticationForm {
+    padding-right: 10px;
+}
+
+input[type="button"] {
+    background-color: #262624;
+    color: #faf9f5b1;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+input[type="button"]:hover {
+    background-color: #30302E;
+    border: 1px solid #30302E;
+}
+
+input[type="button"]:active {
+    transform: scale(0.98);
+}
+
+input[type="button"]:focus {
+  background-color: #30302E;
+}
+
+.registrationForm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0px;
+}
+
+.registrationFormCard {
+    background-color: #262624;
+    border: 1px solid #41413E;
+    padding: 20px 30px;
+    border-radius: 3%;
+    -webkit-box-shadow: 0px 0px 2px 1px rgba(65,65,62,0.72); 
+    box-shadow: 0px 0px 2px 1px rgba(65,65,62,0.72);
+}
+
+select {
+    background-color: #30302E;
+    padding: 4px 0px;
+}
+
+.registrationFormInputs {
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+  background-color: #30302E;
+  color: white;
+  padding: 10px;
+    border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.heroSectionCard {
+    height: 500px;
+    width: 100%;
+    background: #063059;
+    background: linear-gradient(90deg, rgba(6, 48, 89, 1) 0%, rgba(13, 68, 123, 1) 42%, rgba(20, 85, 149, 1) 100%);
+    padding: 20px 10px;
+    margin-top: 5px;
+}
