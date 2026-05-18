@@ -1,8 +1,10 @@
 function performSearch() {
     let query = document.getElementById('searchBar').value;
     let category = document.getElementById('categoryFilter').value;
+    let subCategory = document.getElementById('subCategoryFilter').value;
 
-    fetch(`app/controllers/searchController.php?q=${encodeURIComponent(query)}&category=${encodeURIComponent(category)}`)
+
+    fetch(`app/controllers/searchController.php?q=${encodeURIComponent(query)}&category=${encodeURIComponent(category)}&sub_category=${encodeURIComponent(subCategory)}`)
     .then(response => response.json())
     .then(data => {
         let grid = document.getElementById('contentGrid');
@@ -10,7 +12,6 @@ function performSearch() {
 
         if (data.status === 'success' && data.data.length > 0) {
             data.data.forEach(item => {
-                
                 grid.innerHTML += `
                     <div class="registrationFormCard" style="width: 300px; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
@@ -29,6 +30,45 @@ function performSearch() {
         } else {
             grid.innerHTML = '<p>No contents found matching your search.</p>';
         }
+    });
+}
+function loadSubCategories() {
+    let categoryId = document.getElementById('categoryFilter').value;
+    let subCatSelect = document.getElementById('subCategoryFilter');
+    
+    // Check if the function is firing at all
+    console.log("Loading subcategories for Category ID:", categoryId);
+    
+    if (!categoryId) {
+        subCatSelect.innerHTML = '<option value="">All Sub-Categories</option>';
+        subCatSelect.disabled = true;
+        subCatSelect.value = '';
+        return;
+    }
+
+    fetch(`app/controllers/subCategoryController.php?category_id=${encodeURIComponent(categoryId)}`)
+    .then(response => {
+        // This catches HTML PHP errors if your server crashes
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Subcategory data received:", data);
+        subCatSelect.innerHTML = '<option value="">All Sub-Categories</option>';
+        if (data.status === 'success' && data.data.length > 0) {
+            data.data.forEach(sub => {
+                subCatSelect.innerHTML += `<option value="${sub.id}">${sub.name}</option>`;
+            });
+            subCatSelect.disabled = false; // UNMUTES THE DROPDOWN
+        } else {
+            subCatSelect.disabled = true;
+        }
+    })
+    .catch(error => {
+        console.error("AJAX Crash Error:", error);
+        alert("The server crashed while fetching sub-categories. Press F12 and check the Console!");
     });
 }
 

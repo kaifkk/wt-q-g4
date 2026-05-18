@@ -2,8 +2,8 @@
 session_start();
 
 require_once 'app/config/config.php'; 
-
 require_once 'app/models/contentModel.php'; 
+
 $categories = getAllCategories();
 ?>
 <!DOCTYPE html>
@@ -36,14 +36,18 @@ $categories = getAllCategories();
             <h2>Free Media Downloads</h2>
             <p>Movies, Software, TV Series, Games - no account needed</p>
             
-            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
                 <input type="text" id="searchBar" placeholder="Search titles, descriptions.." onkeyup="performSearch()" style="width: 300px; border-radius: 5px; background-color: #30302E; color: white; padding: 10px; border: 1px solid #41413E; outline: none;" />
                 
-                <select id="categoryFilter" onchange="performSearch()" style="border-radius: 5px; padding: 10px; background-color: #30302E; color: white; border: 1px solid #41413E; outline: none;">
+                <select id="categoryFilter" onchange="loadSubCategories(); performSearch();" style="border-radius: 5px; padding: 10px; background-color: #30302E; color: white; border: 1px solid #41413E; outline: none;">
                     <option value="">All Categories</option>
                     <?php foreach($categories as $cat): ?>
                         <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
                     <?php endforeach; ?>
+                </select>
+
+                <select id="subCategoryFilter" onchange="performSearch()" disabled style="border-radius: 5px; padding: 10px; background-color: #30302E; color: white; border: 1px solid #41413E; outline: none;">
+                    <option value="">All Sub-Categories</option>
                 </select>
             </div>
         </div>
